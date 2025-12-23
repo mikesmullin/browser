@@ -61,6 +61,12 @@ def dom(selector: str = "body"):
     handle_response(response)
 
 @app.command()
+def screenshot(full_page: bool = typer.Option(False, "--full-page", help="Take a full page screenshot")):
+    """Take a screenshot of the current page."""
+    response = httpx.post(f"{SERVER_URL}/screenshot", json={"full_page": full_page})
+    handle_response(response)
+
+@app.command()
 def wait(selector: str, timeout: int = 10000):
     """Wait for an element to appear (simulated via polling)."""
     # Since we are moving logic to client/server, we can implement a simple poll here

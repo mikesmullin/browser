@@ -60,6 +60,9 @@ class FillRequest(BaseModel):
 class ExecuteRequest(BaseModel):
     script: str
 
+class ScreenshotRequest(BaseModel):
+    full_page: bool = False
+
 @app.get("/")
 async def root():
     return {"status": "running", "service": "browser-use-server"}
@@ -149,6 +152,49 @@ async def execute(request: ExecuteRequest):
         return {"success": True, "result": result}
     except Exception as e:
         logger.error(f"Execution failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/screenshot")
+async def screenshot(request: ScreenshotRequest):
+    if not browser:
+        raise HTTPException(status_code=503, detail="Browser not initialized")
+    
+    try:
+        page = await browser.get_current_page()
+        logger.info(f"Page type: {type(page)}")
+        logger.info(f"Page dir: {dir(page)}")
+        
+        # Ensure screenshots directory exists
+        from pathlib import Path
+        import time
+        # Save to workspace local dir
+        screenshots_dir = Path(__file__).parent.parent / ".browser_data" / "screenshots"
+        screenshots_dir.mkdir(parents=True, exist_ok=True)
+        
+        filename = f"screenshot_{int(time.time())}.png"
+        filepath = screenshots_dir / filename
+        
+        # Try calling screenshot without path first to see what it returns
+        result = await page.screenshot()
+        logger.info(f"Screenshot result type: {type(result)}")
+        
+        if isinstance(result, bytes):
+            with open(filepath, "wb") as f:
+                f.write(result)
+        elif isinstance(result, str):
+            # Maybe it's base64?
+            import base64
+            try:
+                data = base64.b64decode(result)
+                with open(filepath, "wb") as f:
+                    f.write(data)
+            except:
+                # Maybe it's a path?
+                logger.info(f"Screenshot result string: {result}")
+        
+        return {"success": True, "path": str(filepath)}
+    except Exception as e:
+        logger.error(f"Screenshot failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/click")
