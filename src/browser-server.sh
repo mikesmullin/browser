@@ -36,7 +36,15 @@ case "$1" in
         
         # Start the server
         echo "🌐 Starting server on port $SERVER_PORT..."
-        nohup node browser-server.mjs > "$SERVER_LOG" 2>&1 &
+        # Use uv to run the python server
+        # We assume uv is in path or we use the venv python
+        if [ -f "../.venv/bin/python" ]; then
+            PYTHON_CMD="../.venv/bin/python"
+        else
+            PYTHON_CMD="python"
+        fi
+        
+        nohup $PYTHON_CMD browser_server.py > "$SERVER_LOG" 2>&1 &
         SERVER_PID=$!
         echo $SERVER_PID > "$SERVER_PID_FILE"
         
@@ -45,7 +53,7 @@ case "$1" in
         if kill -0 "$SERVER_PID" 2>/dev/null; then
             echo "✅ Server started with PID $SERVER_PID"
             echo "📋 Log file: $SERVER_LOG"
-            echo "🔍 Check status with: ./start-server.sh status"
+            echo "🔍 Check status with: ./browser-server.sh status"
         else
             echo "❌ Failed to start server"
             rm -f "$SERVER_PID_FILE"
