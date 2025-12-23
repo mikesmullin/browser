@@ -10,6 +10,7 @@ dependencies = [
     "uvicorn",
     "typer",
     "httpx",
+    "ultralytics>=8.3.241",
 ]
 
 [project.scripts]

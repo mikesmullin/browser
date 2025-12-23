@@ -29,6 +29,10 @@ These are CLI commands you may use.
 | Get DOM Content | `browser client dom [SELECTOR]` | Get HTML content of element (default: body) |
 | Fill Input Field | `browser client fill SELECTOR VALUE` | Fill form input field with value |
 | Click Element | `browser client click SELECTOR` | Click on specified element |
+| Click at Coordinates | `browser client click-at X Y` | Click at specific coordinates |
+| Visualize Elements | `browser client visualize [--csv]` | Generate Set-of-Marks visualization |
+| Detect Objects | `browser client detect [--csv]` | Run YOLO object detection |
+| Segment Objects | `browser client segment` | Run SAM segmentation |
 
 ## Examples
 
@@ -104,3 +108,75 @@ The browser service was successfully started, and I performed the requested sear
 3.  **Hamster Dance - Wikipedia**
     - [https://en.wikipedia.org/wiki/Hamster_Dance](https://en.wikipedia.org/wiki/Hamster_Dance)
 ```
+
+
+### Visual Grounding Example
+
+Sample user prompt:
+
+> Find the "Sign in" button on this page using vision and click it.
+
+Sample agent output:
+
+```bash
+# 1. Get visual coordinates of interactive elements (CSV is default)
+browser client visualize | grep -i "Sign in"
+# Output: 1194,28,5,Sign in
+
+# 2. Click at the identified coordinates
+browser client click-at 1194 28
+```
+
+**Example Output:**
+![Visualized Elements](docs/visualized_example.png)
+
+**CSV Representation (truncated):**
+```csv
+44,30,0,About
+99,30,1,Store
+1010,28,2,Gmail
+1066,28,3,Images
+1124,28,4,
+1194,28,5,Sign in
+```
+
+### Object Detection Example (YOLOv8)
+
+Sample user prompt:
+
+> Detect people and bicycles in the current image search results.
+
+```bash
+browser client detect
+# Output:
+# 256,180,0,person
+# 240,320,1,bicycle
+# ...
+```
+
+**Example Output:**
+![Detected Objects](docs/detected_example.png)
+
+### Image Segmentation Example (SAM)
+
+Sample user prompt:
+
+> Segment the visual regions of the current page and click on the main logo (Segment 0).
+
+```bash
+# 1. Run segmentation to get IDs and coordinates
+browser client segment
+# Output:
+# 450,300,0,segment
+# 120,50,1,segment
+# ...
+
+# 2. Click at the coordinates corresponding to ID 0
+browser client click-at 450 300
+```
+
+**Example Output:**
+![Segmented Regions](docs/segmented_example.png)
+
+**How it works:**
+The `segment` command returns a CSV mapping (`x,y,id,label`). The `id` in the CSV matches the large number shown in the `segmented_*.png` image. An AI agent can look at the image to identify which segment it wants to interact with, find that ID in the CSV, and use the provided `x,y` coordinates for a `click-at` command.
