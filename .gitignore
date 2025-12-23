@@ -1,0 +1,6 @@
+/browser-server.log
+/browser-server.pid
+node_modules/
+storage/.session-cache.json
+/tmp/
+.DS_Store
