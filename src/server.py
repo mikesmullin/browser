@@ -22,10 +22,9 @@ async def lifespan(app: FastAPI):
     global browser, browser_context
     logger.info("🚀 Starting Browser Use server...")
     
-    # Determine user data directory (in workspace root)
-    # We are in src/, so root is ../
-    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    user_data_dir = os.path.join(root_dir, ".browser_data")
+    # Determine user data directory
+    from pathlib import Path
+    user_data_dir = Path.home() / ".browser_agent"
     
     logger.info(f"📂 Using user data directory: {user_data_dir}")
     

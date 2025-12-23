@@ -13,10 +13,10 @@ Meaning any task that can be accomplished via a browser.
 ## 🏗️ File Structure
 ```
 src/
-├── browser_server.py         # Interactive browser debug server (FastAPI)
-├── browser_client.py         # Command-line interface (Typer)
-└── browser-server.sh         # Server management script
-requirements.txt              # Python dependencies
+├── cli.py                # Main entry point
+├── server.py             # Interactive browser debug server (FastAPI)
+└── client.py             # Command-line interface (Typer)
+pyproject.toml            # Project configuration
 ```
 
 ## 🚀 Quick Start
@@ -25,78 +25,51 @@ requirements.txt              # Python dependencies
 - Python 3.11+
 - `uv` (recommended)
 
-### Step 1: Setup Environment
+### Installation
+
+Install the tool globally using `uv`:
+
 ```bash
-# Install dependencies
-uv venv
-source .venv/bin/activate
-uv pip install -r requirements.txt
+uv tool install .
 ```
 
-### Step 2: Start Interactive Debug Session
+Now you can use the `browser` command anywhere!
+
+### Usage
+
+#### Server Management
+
 ```bash
-cd src
+# Start the server (background by default)
+browser server start
 
-# Start the server (background)
-./browser-server.sh start
-```
+# Check status
+browser server status
 
-### Step 3: Verify Connection
-```bash
-# Check server status
-./browser-server.sh status
-
-# Test client connection
-python browser_client.py status
-
-# Should show: URL: about:blank, ready: true
-```
-
-### Step 4: Test Basic Browser Functions
-```bash
-# Test navigation
-python browser_client.py navigate "https://httpbin.org/html"
-
-# Check DOM inspection
-python browser_client.py dom "h1"
-
-# Execute JavaScript
-python browser_client.py execute "() => document.title"
-```
-
-### Step 5: Test Form Interaction (Example)
-```bash
-# Navigate to a page with a search form
-python browser_client.py navigate "https://www.google.com"
-
-# Fill search input
-python browser_client.py fill "[name='q']" "test query"
-
-# Click search button
-python browser_client.py click "[name='btnK']"
-
-# Wait for results (manual check or poll)
-python browser_client.py execute "() => document.querySelector('#search') ? true : false"
-```
-
-## 🛠️ Server Management
-
-### Using browser-server.sh (Recommended)
-```bash
-# Start server in background
-./browser-server.sh start
-
-# Check server status and logs
-./browser-server.sh status
+# View logs
+browser server logs --follow
 
 # Stop server
-./browser-server.sh stop
+browser server stop
+```
 
-# Restart server
-./browser-server.sh restart
+#### Client Commands
 
-# View live logs
-tail -f ../browser-server.log
+```bash
+# Check connection
+browser client status
+
+# Navigate
+browser client navigate "https://www.google.com"
+
+# Fill form
+browser client fill "[name='q']" "hamster dance"
+
+# Click
+browser client click "[name='btnK']"
+
+# Execute JS
+browser client execute "() => document.title"
 ```
 
 ## 🔌 API Reference

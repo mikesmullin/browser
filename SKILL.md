@@ -19,17 +19,16 @@ These are CLI commands you may use.
 
 | Task | Command | Purpose |
 |------|---------|---------|
-| Start Browser Server | [](src/browser-server.sh) start | Start background browser server |
-| Stop Browser Server | [](src/browser-server.sh) stop | Stop background server |
-| Server Status | [](src/browser-server.sh) status | Check server status and latest logs summary |
-| Restart Browser Server | [](src/browser-server.sh) restart | Restart background server |
-| View Live Logs | [](src/browser-server.sh) logs | Tail live server logs |
-| Get Page Status | `python src/browser_client.py status` | Get current page URL and title |
-| Navigate to URL | `python src/browser_client.py navigate URL` | Navigate browser to specified URL |
-| Execute JavaScript | `python src/browser_client.py execute JAVASCRIPT` | Execute JavaScript code (arrow function) |
-| Get DOM Content | `python src/browser_client.py dom [SELECTOR]` | Get HTML content of element (default: body) |
-| Fill Input Field | `python src/browser_client.py fill SELECTOR VALUE` | Fill form input field with value |
-| Click Element | `python src/browser_client.py click SELECTOR` | Click on specified element |
+| Start Browser Server | `browser server start` | Start background browser server |
+| Stop Browser Server | `browser server stop` | Stop background server |
+| Server Status | `browser server status` | Check server status and latest logs summary |
+| View Live Logs | `browser server logs --follow` | Tail live server logs |
+| Get Page Status | `browser client status` | Get current page URL and title |
+| Navigate to URL | `browser client navigate URL` | Navigate browser to specified URL |
+| Execute JavaScript | `browser client execute JAVASCRIPT` | Execute JavaScript code (arrow function) |
+| Get DOM Content | `browser client dom [SELECTOR]` | Get HTML content of element (default: body) |
+| Fill Input Field | `browser client fill SELECTOR VALUE` | Fill form input field with value |
+| Click Element | `browser client click SELECTOR` | Click on specified element |
 
 ## Examples
 
@@ -52,43 +51,44 @@ GitHub Copilot: Created 6 todos
 
 Starting: *Start browser service* (1/6)
 
-Ran terminal command: source .venv/bin/activate && cd src && ./browser-server.sh start
+Ran terminal command: browser server start
 
 Stdout:
 Starting browser server...
-✅ Server started (PID 12345)
+✅ Server started in background (PID 12345)
+Logs: /home/user/.browser_agent/server.log
 
 Starting: *Navigate to Google* (2/6)
 
-Ran terminal command: python browser_client.py navigate "https://www.google.com"
+Ran terminal command: browser client navigate "https://www.google.com"
 
 Stdout:
 ✅ Navigated to https://www.google.com
 
 Starting: *Type search query* (3/6)
 
-Ran terminal command: python browser_client.py fill "[name='q']" "hamster dance"
+Ran terminal command: browser client fill "[name='q']" "hamster dance"
 
 Stdout:
 ✅ Filled [name='q']
 
 Starting: *Click search button* (4/6)
 
-Ran terminal command: python browser_client.py click "[name='btnK']"
+Ran terminal command: browser client click "[name='btnK']"
 
 Stdout:
 ✅ Clicked [name='btnK']
 
 Starting: *Read search results* (5/6)
 
-Ran terminal command: python browser_client.py execute "() => Array.from(document.querySelectorAll('#search h3')).slice(0, 3).map(h3 => ({title: h3.innerText, link: h3.closest('a')?.href}))"
+Ran terminal command: browser client execute "() => Array.from(document.querySelectorAll('#search h3')).slice(0, 3).map(h3 => ({title: h3.innerText, link: h3.closest('a')?.href}))"
 
 Stdout:
 Result: [{"title": "Hampton the Hamster \"The Hamsterdance Song\"", "link": "https://www.youtube.com/watch?v=1qN72LEQnaU"}, ...]
 
 Starting: *Stop server* (6/6)
 
-Ran terminal command: ./browser-server.sh stop
+Ran terminal command: browser server stop
 
 Stdout:
 ✅ Server stopped (PID 12345)
