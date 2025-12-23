@@ -1,10 +1,44 @@
-User: 
-> - you are a System Administrator agent.
-> - read `README.md` to understand this project
-> - read `cli.md` to understand which tool cli commands are at your disposal
-> 
-> 
-> then let's test:
+---
+name: browser
+description: remotely orchestrate a (chromium) browser to utilize web apps
+---
+
+# Browser
+
+Uses [Playwright](https://playwright.dev/) to browse any website.
+Remotely orchestrate a browser, to navigate the web.
+Meaning any task that can be accomplished via a browser.
+
+## Instructions
+
+- read `README.md` to understand this project
+
+## QUICK REFERENCE
+
+These are CLI commands you may use.
+
+| Task | Command | Purpose |
+|------|---------|---------|
+| Start Browser Server | [](actions/browser-server.sh) start | Start background browser server with Playwright session |
+| Stop Browser Server | [](actions/browser-server.sh) stop | Stop background server |
+| Server Status | [](actions/browser-server.sh) status | Check server status and latest logs summary |
+| Restart Browser Server | [](actions/browser-server.sh) restart | Restart background server |
+| View Live Logs | [](actions/browser-server.sh) logs | Tail live server logs |
+| Get Page Status | [](actions/browser-client.mjs) status | Get current page URL and title |
+| Navigate to URL | [](actions/browser-client.mjs) navigate URL | Navigate browser to specified URL |
+| Execute JavaScript | [](actions/browser-client.mjs) execute JAVASCRIPT | Execute JavaScript code in browser context |
+| Get DOM Content | [](actions/browser-client.mjs) dom [SELECTOR] | Get HTML content of element (default: body) |
+| Take Screenshot | [](actions/browser-client.mjs) screenshot [NAME] | Capture screenshot of current page |
+| Get Console Logs | [](actions/browser-client.mjs) console | Retrieve recent browser console logs |
+| Wait for Element | [](actions/browser-client.mjs) wait SELECTOR [TIMEOUT] | Wait for element to appear (default timeout: 10s) |
+| Fill Input Field | [](actions/browser-client.mjs) fill SELECTOR VALUE | Fill form input field with value |
+| Click Element | [](actions/browser-client.mjs) click SELECTOR | Click on specified element |
+
+## Examples
+
+Sample user prompt:
+
+> let's test this project:
 > - start browser service
 > - use client scripts to 
 >   - navigate to google.com
@@ -14,13 +48,12 @@ User:
 >   - read first 3 search results
 >   - summarize them in your response to me
 
----
+Sample agent output (ie. `Gemini 3 Flash`):
 
+```
 GitHub Copilot: Created 8 todos
 
 Read [](file:///workspace/cli/browser/README.md#1-1), lines 1 to 100
-
-Read [](file:///workspace/cli/browser/cli.md)
 
 Starting: *Start browser service* (2/8)
 
@@ -75,3 +108,4 @@ The browser service was successfully started, and I performed the requested sear
 3.  **Hampster Dance**
     *   **Link:** [https://en.wikipedia.org/wiki/Hampster_Dance](https://en.wikipedia.org/wiki/Hampster_Dance)
     *   **Summary:** The Wikipedia entry detailing the history, creation, and cultural impact of the Hampster Dance, one of the earliest internet memes.
+```
