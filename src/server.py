@@ -471,6 +471,23 @@ async def dom_endpoint(request: SelectorRequest):
     """
     return await execute(ExecuteRequest(script=script))
 
+@app.get("/cookies")
+async def cookies(domain: str = None):
+    """Get all browser cookies including HttpOnly (via CDP Storage.getCookies).
+    Optionally filter by domain substring.
+    """
+    if not browser:
+        raise HTTPException(status_code=503, detail="Browser not initialized")
+
+    try:
+        all_cookies = await browser.cookies()
+        if domain:
+            all_cookies = [c for c in all_cookies if domain in c.get("domain", "")]
+        return {"cookies": all_cookies}
+    except Exception as e:
+        logger.error(f"Failed to get cookies: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=3001)

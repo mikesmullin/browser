@@ -119,6 +119,31 @@ def segment(show_csv: bool = typer.Option(True, "--csv/--no-csv", help="Show the
         handle_response(response)
 
 @app.command()
+def cookies(
+    domain: Optional[str] = typer.Option(None, "--domain", "-d", help="Filter by domain substring (e.g. service-now.com)"),
+    name: Optional[str] = typer.Option(None, "--name", "-n", help="Print value of a single named cookie"),
+):
+    """Get all browser cookies including HttpOnly. Optionally filter by domain."""
+    params = {}
+    if domain:
+        params["domain"] = domain
+    response = client.get(f"{SERVER_URL}/cookies", params=params)
+    if response.status_code == 200:
+        data = response.json()
+        jar = data.get("cookies", [])
+        if name:
+            match = next((c for c in jar if c["name"] == name), None)
+            if match:
+                print(match["value"])
+            else:
+                print(f"Error: cookie '{name}' not found", file=sys.stderr)
+                sys.exit(1)
+        else:
+            print(json.dumps(jar, indent=2))
+    else:
+        handle_response(response)
+
+@app.command()
 def wait(selector: str, timeout: int = 10000):
     """Wait for an element matching the selector to appear in the DOM, up to a timeout (ms)."""
     # Since we are moving logic to client/server, we can implement a simple poll here
